@@ -48,18 +48,18 @@ function addSeoMetaFields() {
 	wp_nonce_field( 'seo_meta_tags', 'seo_meta_tags' );
 	?>
     <div class="form-group">
-        <label for="seoTitle">SEO Title</label><br>
+        <label for="seoTitle"><?= __( 'SEO Title', 'simple-seo-meta' ) ?></label><br>
         <input type="text" name="seoTitle" id="seoTitle" value="<?= $data['seoTitle']; ?>">
     </div>
 
     <div class="form-group">
-        <label for="seoMetaKeywords">Meta keywords</label><br>
+        <label for="seoMetaKeywords"><?= __( 'Meta keywords', 'simple-seo-meta' ) ?></label><br>
         <textarea name="seoMetaKeywords"
                   id="seoMetaKeywords"><?= $data['seoMetaKeywords']; ?></textarea>
     </div>
 
     <div class="form-group">
-        <label for="seoMetaDescription">Meta Description</label><br>
+        <label for="seoMetaDescription"><?= __( 'Meta Description', 'simple-seo-meta' ) ?></label><br>
         <textarea name="seoMetaDescription"
                   id="seoMetaDescription"><?= $data['seoMetaDescription']; ?></textarea>
     </div>
