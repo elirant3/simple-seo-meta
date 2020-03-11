@@ -1,7 +1,5 @@
 # simple-seo-meta
 Simple Seo Metadata
 --
-The plugin add meta box containing the main inputs:
-SEO title,
-Meta keywords,
-Meta description
+The plugin add meta box containing the inputs SEO title, Meta keywords, Meta description to all type of posts.
+You can specify different values to posts.
