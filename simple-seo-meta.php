@@ -11,10 +11,12 @@ License: A "Slug" license name e.g. GPL2
 Text Domain: simple-seo-meta
 */
 
+/*denied direct access to file.*/
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Add the meta fields to all post types.
  */
-
 if ( ! function_exists( 'sism_add_seo_meta_box' ) ) {
 	add_action( 'add_meta_boxes', 'sism_add_seo_meta_box' );
 	function sism_add_seo_meta_box() {
@@ -23,7 +25,7 @@ if ( ! function_exists( 'sism_add_seo_meta_box' ) ) {
 			add_meta_box(
 				'seometa_meta_box',
 				'SEO Meta Box',
-				'addSeoMetaFields',
+				'sism_addSeoMetaFields',
 				$post_type,
 				'normal',
 				'high'
@@ -43,11 +45,11 @@ if ( ! function_exists( 'sism_addSeoMetaFields' ) ) {
 		$data['seoMetaDescription'] = '';
 		$data['seoMetaKeywords']    = '';
 		if ( is_object( $post ) && isset( $post->ID ) ) {
-			$postID                     = esc_attr( $post->ID );
-			$data['seoTitle']           = get_post_meta( $postID, 'seoTitle', true );
-			$data['seoSlug']            = get_post_meta( $postID, 'seoSlug', true );
-			$data['seoMetaDescription'] = get_post_meta( $postID, 'seoMetaDescription', true );
-			$data['seoMetaKeywords']    = get_post_meta( $postID, 'seoMetaKeywords', true );
+			$postID                     = sanitize_text_field( $post->ID );
+			$data['seoTitle']           = get_post_meta( $postID, 'sism_seoTitle', true );
+			$data['seoSlug']            = get_post_meta( $postID, 'sism_seoSlug', true );
+			$data['seoMetaDescription'] = get_post_meta( $postID, 'sism_seoMetaDescription', true );
+			$data['seoMetaKeywords']    = get_post_meta( $postID, 'sism_seoMetaKeywords', true );
 		}
 
 		wp_nonce_field( 'seo_meta_tags', 'seo_meta_tags' );
@@ -130,16 +132,16 @@ if ( ! function_exists( 'sism_saveSeoMetaBox' ) ) {
 		}
 
 		/*string the seo meta as post meta*/
-		update_post_meta( $post_id, 'seoTitle', $data['seoTitle'] );
-		update_post_meta( $post_id, 'seoSlug', $data['seoSlug'] );
-		update_post_meta( $post_id, 'seoMetaDescription', $data['seoMetaDescription'] );
-		update_post_meta( $post_id, 'seoMetaKeywords', $data['seoMetaKeywords'] );
+		update_post_meta( $post_id, 'sism_seoTitle', $data['seoTitle'] );
+		update_post_meta( $post_id, 'sism_seoSlug', $data['seoSlug'] );
+		update_post_meta( $post_id, 'sism_seoMetaDescription', $data['seoMetaDescription'] );
+		update_post_meta( $post_id, 'sism_seoMetaKeywords', $data['seoMetaKeywords'] );
 
 	}
 }
 
 if ( ! function_exists( 'sism_showSeoMetaTags' ) ) {
-	add_filter( 'wp_title', 'sism_showSeoMetaTags' );
+	add_filter( 'pre_get_document_title', 'sism_showSeoMetaTags', 1 );
 	function sism_showSeoMetaTags( $title ) {
 		global $post;
 		$title = _x( get_bloginfo( 'name' ) . ' – ' . get_bloginfo( 'description' ), 'simple-seo-meta' );
@@ -161,8 +163,8 @@ if ( ! function_exists( 'sism_showSeoMetaDescription' ) ) {
 		$description     = '';
 		$seoMetaKeywords = '';
 		if ( is_object( $post ) && isset( $post->ID ) ) {
-			$seoMetaDescription = get_post_meta( $post->ID, 'seoMetaDescription', true );
-			$seoMetaKeywords    = get_post_meta( $post->ID, 'seoMetaKeywords', true );
+			$seoMetaDescription = get_post_meta( $post->ID, 'sism_seoMetaDescription', true );
+			$seoMetaKeywords    = get_post_meta( $post->ID, 'sism_seoMetaKeywords', true );
 			if ( ! empty( $seoMetaDescription ) ) {
 				$description = $seoMetaDescription;
 			}
@@ -170,8 +172,8 @@ if ( ! function_exists( 'sism_showSeoMetaDescription' ) ) {
 
 		/* translators: %s: "$description" */
 		$description = sprintf( _x( '%s', 'simple-seo-meta' ), $description );
-		echo '<meta name="description" content="' . esc_attr( $description ) . '">';
-		echo '<meta name="keywords" content="' . esc_attr( $seoMetaKeywords ) . '">';
+		echo '<meta name="description" content="' . sanitize_text_field( $description ) . '">';
+		echo '<meta name="keywords" content="' . sanitize_text_field( $seoMetaKeywords ) . '">';
 	}
 }
 
